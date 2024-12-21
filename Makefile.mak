@@ -1,11 +1,17 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -pedantic -fopenmp
+CXXFLAGS = -std=c++11
 
-SRCS = main.cpp Queries_NW.cpp Queries_BL.cpp my_strings.cpp genomeprocessing.cpp
+SRCS = main.cpp prefix_trie.cpp my_strings.cpp genomeprocessing.cpp
 OBJS = $(SRCS:.cpp=.o)
+EXEC = main
 
-main: $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o main
+all: $(EXEC)
+
+$(EXEC): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) main
+	rm -f $(OBJS) $(EXEC)
