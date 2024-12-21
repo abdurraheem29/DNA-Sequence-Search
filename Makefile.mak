@@ -1,17 +1,35 @@
 CXX = g++
-CXXFLAGS = -std=c++11
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++17 -O3 -fopenmp
+CPPFLAGS = -I.
+LDLIBS = -lpthread
 
-SRCS = main.cpp prefix_trie.cpp my_strings.cpp genomeprocessing.cpp
-OBJS = $(SRCS:.cpp=.o)
-EXEC = main
+# Files
+genome_file_path = /common/contrib/classroom/inf503/genomes/human_microbiome.txt
 
-all: $(EXEC)
+ARGS = $(genome_file_path)
 
-$(EXEC): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(EXEC)
+all = main
 
-%.o: %.cpp
+# Build
+build: $(all)
+
+main: main.o genomeprocessing.o suffix_tree.o
+	$(CXX) $(CXXFLAGS) $(LDLIBS) -o main $^
+
+%.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+.PHONY: clean
+
 clean:
-	rm -f $(OBJS) $(EXEC)
+	rm -f *.o *.txt $(all)
+
+# Test and run
+runa:
+	./main --genome $(genome_file_path) --fragments 5000 		
+	./main --genome $(genome_file_path) --fragments 50000 
+	./main --genome $(genome_file_path) --fragments 100000 
+
+runb:
+	./main --genome $(genome_file_path) --fragments 100000 
+	
